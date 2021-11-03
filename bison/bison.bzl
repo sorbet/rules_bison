@@ -16,7 +16,7 @@
 
 load("@rules_bison//bison/internal:repository.bzl", _bison_repository = "bison_repository")
 load("@rules_bison//bison/internal:toolchain.bzl", _BISON_TOOLCHAIN_TYPE = "BISON_TOOLCHAIN_TYPE")
-load("@rules_bison//bison/internal:versions.bzl", "DEFAULT_VERSION", "check_version")
+load("@rules_bison//bison/internal:versions.bzl", "DEFAULT_VERSION", "DEFAULT_MIRRORS", "check_version")
 load("@rules_m4//m4:m4.bzl", "M4_TOOLCHAIN_TYPE")
 
 BISON_TOOLCHAIN_TYPE = _BISON_TOOLCHAIN_TYPE
@@ -26,7 +26,7 @@ def bison_toolchain(ctx):
     return ctx.toolchains[BISON_TOOLCHAIN_TYPE].bison_toolchain
 
 # buildifier: disable=unnamed-macro
-def bison_register_toolchains(version = DEFAULT_VERSION, extra_copts = []):
+def bison_register_toolchains(version = DEFAULT_VERSION, extra_copts = [], mirrors = DEFAULT_MIRRORS):
     check_version(version)
     repo_name = "bison_v{}".format(version)
     if repo_name not in native.existing_rules().keys():
@@ -34,6 +34,7 @@ def bison_register_toolchains(version = DEFAULT_VERSION, extra_copts = []):
             name = repo_name,
             version = version,
             extra_copts = extra_copts,
+            mirrors = mirrors,
         )
     native.register_toolchains("@rules_bison//bison/toolchains:v{}".format(version))
 

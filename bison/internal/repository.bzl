@@ -18,6 +18,7 @@ load(
     "@rules_bison//bison/internal:versions.bzl",
     _VERSION_URLS = "VERSION_URLS",
     _check_version = "check_version",
+    _mirror_urls = "mirror_urls",
 )
 load(
     "@rules_bison//bison/internal:gnulib/gnulib.bzl",
@@ -95,7 +96,7 @@ def _bison_repository(ctx):
     source = _VERSION_URLS[version]
 
     ctx.download_and_extract(
-        url = source["urls"],
+        url = _mirror_urls(version, ctx.attr.mirrors),
         sha256 = source["sha256"],
         stripPrefix = "bison-{}".format(version),
     )
@@ -117,6 +118,7 @@ bison_repository = repository_rule(
     attrs = {
         "version": attr.string(mandatory = True),
         "extra_copts": attr.string_list(),
+        "mirrors": attr.string_list(),
         "_gnulib_build": attr.label(
             default = "@rules_bison//bison/internal:gnulib/gnulib.BUILD",
             allow_single_file = True,
